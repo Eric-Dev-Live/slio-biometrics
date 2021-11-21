@@ -12,6 +12,7 @@ import com.sliosecure.slio_biometrics.data.wsq;
 import com.sliosecure.slio_biometrics.device.Constants;
 import com.sliosecure.slio_biometrics.device.FPModule;
 import com.sliosecure.slio_biometrics.fpcore.FPMatch;
+import java.lang.Error
 
 /** SlioBiometricsPlugin */
 class SlioBiometricsPlugin: FlutterPlugin, MethodCallHandler {
@@ -39,27 +40,74 @@ class SlioBiometricsPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else if (call.method == "getDeviceType") {
-      result.success(fpm.deviceType)
-    }else if (call.method == "getDeviceIO") {
-      result.success(fpm.getDeviceIO)
-    }else if (call.method == "getUartName") {
-      result.success(fpm.getUartName)
-    }else if (call.method == "getUartBaudRate") {
-      result.success(fpm.getUartBaudRate)
-    }else if (call.method == "PowerControl") {
-      result.success(fpm.PowerControl)
-    }else if (call.method == "OpenDevice") {
-      result.success(fpm.OpenDevice)
-    }else if (call.method == "CloseDevice") {
-      result.success(fpm.CloseDevice)
-    }else if (call.method == "InitMatch") {
-      result.success(fpm.InitMatch)
-    }
-    else {
-      result.notImplemented()
+    when (call.method) {
+        "getPlatformVersion" -> {
+          result.success("Android ${android.os.Build.VERSION.RELEASE}")
+        }
+        "getDeviceType" -> {
+          result.success(fpm.deviceType)
+        }
+        "getDeviceIO" -> {
+          val deviceType = call.argument<Int>("type")
+          try {
+            val type = fpm.getDeviceIO(deviceType)
+            result.success(type)
+          }catch (e: Error){
+            result.error("Device Type Error ", e.message , null)
+          }
+        }
+        "getUartName" -> {
+          result.success(fpm.getUartName)
+          try {
+            val uart = fpm.getUartName()
+            result.success(uart)
+          }catch (e: Error){
+            result.error("UART FPM Error ", e.message , null)
+          }
+        }
+        "getUartBaudRate" -> {
+          try {
+            val baudRate =  fpm.getUartBaudRate()
+            result.success(baudRate)
+          }catch (e: Error){
+            result.error("BaudRate FPM Error ", e.message , null)
+          }
+        }
+        "PowerControl" -> {
+          try {
+            fpm.PowerControl()
+            result.success()
+          }catch (e: Error){
+            result.error("PowerControl FPM Error ", e.message , null)
+          }
+        }
+        "OpenDevice" -> {
+          try {
+            fpm.OpenDevice()
+            result.success()
+          }catch (e: Error){
+            result.error("Open FPM Error ", e.message , null)
+          }
+        }
+        "CloseDevice" -> {
+          try {
+            fpm.CloseDevice()
+            result.success()
+          }catch (e: Error){
+            result.error("Close FPM Error ", e.message , null)
+          }
+        }
+        "InitMatch" -> {
+          try {
+            fpm.InitMatch()
+            result.success()
+          }catch (e: Error){
+            result.error("Initialization Error ", e.message , null)
+          }
+        }
+        else -> {
+          result.notImplemented()
+        }
     }
   }
 
