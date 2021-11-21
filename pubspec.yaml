@@ -1,7 +1,7 @@
 name: slio_biometrics
 description: Fingerprints scanner utilities.
 version: 0.0.1
-homepage: https://docs.sliosecure.com
+homepage: https://github.com/Eric-Dev-Live/slio-biometrics.git
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
